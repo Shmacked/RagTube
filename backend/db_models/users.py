@@ -1,6 +1,9 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from backend.database import Base
+from sqlalchemy.orm import relationship
+
 from datetime import datetime
+
+from backend.database import Base
 
 
 class Users(Base):
@@ -10,3 +13,4 @@ class Users(Base):
     password = Column(String, unique=False, index=True)
     email = Column(String, unique=True, index=True)
     created_at = Column(DateTime, default=datetime.now)
+    user_sessions = relationship("UserSession", back_populates="user")

@@ -4,7 +4,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.database import Base, engine
-from backend.routes import chat, vector_db
+from backend.routers import chat, users, vector_db
+
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
@@ -22,7 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(error_logs.router)
-app.include_router(projects.router)
 app.include_router(chat.router)
+app.include_router(users.router)
 app.include_router(vector_db.router)
