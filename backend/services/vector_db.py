@@ -13,7 +13,7 @@ import spacy
 load_dotenv(dotenv_path="backend/.env")
 
 PERSISTENT_DIRECTORY = "backend/chroma_store"
-COLLECTION_NAME = "project_errors" # What tkind of data we're storing
+COLLECTION_NAME = "youtube_transcripts" # What kind of data we're storing
 EMBEDDING = OpenAIEmbeddings(model="text-embedding-3-small")
 
 vector_dbs = {
@@ -21,18 +21,19 @@ vector_dbs = {
 }
 
 
-def get_vector_db(collection_name: str) -> Chroma:
+def get_or_create_vector_db(collection_name: str) -> Chroma:
     """
     Get a vector database.
     """
     collection = vector_dbs.get(collection_name)
     if not collection:
-        raise ValueError(f"Vector database {collection_name} not found")
+        collection = Chroma(persist_directory=PERSISTENT_DIRECTORY, embedding_function=EMBEDDING, collection_name=collection_name)
+        vector_dbs[collection_name] = collection
     return collection
 
 def delete_vector_db(collection_name: str) -> bool:
     try:
-        collection = get_vector_db(collection_name)
+        collection = get_or_create_vector_db(collection_name)
         collection.delete_collection()
         if collection_name in vector_dbs:
             del vector_dbs[collection_name]
@@ -41,7 +42,7 @@ def delete_vector_db(collection_name: str) -> bool:
     return True
 
 def add_documents_to_db(collection_name: str, docs: List[Document]) -> int:
-    collection = get_vector_db(collection_name)
+    collection = get_or_create_vector_db(collection_name)
     
     # Chunk the documents properly
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=512, chunk_overlap=128)
@@ -62,14 +63,14 @@ def add_text_to_vector_db(collection_name: str, text: str, metadata: Optional[Di
 
 def delete_vector_db_data(collection_name: str, data_ids: Optional[list[int]] = None, metadata_filter: Optional[Dict[str, Any]] = None) -> bool:
     try:
-        collection = get_vector_db(collection_name)
+        collection = get_or_create_vector_db(collection_name)
         collection.delete(ids=data_ids, where=metadata_filter)
     except Exception as e:
         return False
     return True
 
 def search_vector_db(collection_name: str, query: str, k: int = 5, _filter: Optional[Dict[str, Any]] = None) -> List[Document]:
-    collection = get_vector_db(collection_name)
+    collection = get_or_create_vector_db(collection_name)
     return collection.similarity_search(query, k=k, filter=_filter)
 
 def extract_entities(text: str) -> List[str]:

@@ -14,3 +14,4 @@ class Users(Base):
     email = Column(String, unique=True, index=True)
     created_at = Column(DateTime, default=datetime.now)
     user_sessions = relationship("UserSession", back_populates="user")
+    urls = relationship("Urls", back_populates="user")

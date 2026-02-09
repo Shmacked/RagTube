@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from backend.database import Base, engine
-from backend.routers import chat, users, vector_db
+from backend.routers import chat, users, vector_db, urls
 
 
 @asynccontextmanager
@@ -26,3 +26,4 @@ app.add_middleware(
 app.include_router(chat.router)
 app.include_router(users.router)
 app.include_router(vector_db.router)
+app.include_router(urls.router)
