@@ -1,2 +1,2 @@
 ragtube.db
-backend/chroma_store/chroma.sqlite3
+backend/chroma_store
