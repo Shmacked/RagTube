@@ -17,10 +17,11 @@ chat_graph = get_chat_graph()
 @router.post("/")
 async def chat(chat_input: ChatInput, db: Session = Depends(get_db), user_session: UserSessionBase = Depends(is_authenticated)):
     response = chat_graph.invoke({
-            "input": chat_input.input
+            "messages": [("user", chat_input.input)],
+            "user_id": user_session.user.id
         },
         config={"configurable": {
             "thread_id": user_session.session_token
         }
     })
-    return {"output": response.get("messages", [])[-1].content}
+    return {"output": response["messages"][-1].content}
