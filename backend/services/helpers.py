@@ -56,8 +56,8 @@ def delete_urls(user: Users, db: Session = Depends(get_db)) -> bool:
         return False
     return True
 
-def get_urls(user: Users, db: Session = Depends(get_db)) -> List[Urls]:
-    return db.query(Urls).filter(Urls.user_id == user.id).all()
+def get_urls(user: Users, db: Session = Depends(get_db)) -> List[dict]:
+    return [url.to_dict() for url in db.query(Urls).filter(Urls.user_id == user.id).all()]
 
 def create_url(url: str, user: Users, db: Session = Depends(get_db), task_id: str = None, task_memory: dict = None, tasks_results: dict = None) -> Urls:
     if task_id and task_memory is None:
@@ -70,8 +70,9 @@ def create_url(url: str, user: Users, db: Session = Depends(get_db), task_id: st
         raise HTTPException(status_code=400, detail="Link already exists")
 
     transcript = transcribe(url, task_id=task_id, task_memory=task_memory, tasks_results=tasks_results)
-    segment_count = len([e for e in transcript])
-    for i, segment in enumerate(transcript):
+    segments = [e for e in transcript]
+    segment_count = len(segments)
+    for i, segment in enumerate(segments):
         task_memory[task_id]["progress"] = (int(((i + 1) / segment_count) * 100) / 2) + 50
         task_memory[task_id]["message"] = f"Adding segment {i + 1} of {segment_count} to vector database"
         add_text_to_vector_db("youtube_transcripts", segment.text, metadata={"user_id": user.id, "url": url, "start_time": segment.start, "end_time": segment.end})

@@ -70,8 +70,7 @@ const ProgressBar = ({ taskId, onComplete }: ProgressBarProps) => {
           transition: 'width 0.4s ease-out' 
         }} />
       </div>
-      <small>Status: {status} ({progress}%)</small>
-      <small>{message}</small>
+      <small>Status: {status} ({progress}%)</small> - <small>{message}</small>
     </div>
   );
 };

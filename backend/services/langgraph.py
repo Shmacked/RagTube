@@ -89,7 +89,7 @@ def get_chat_graph() -> StateGraph:
             }
         }
 
-        search_results = search_vector_db("youtube_transcripts", _input, k=10, _filter=_filter)
+        search_results = search_vector_db("youtube_transcripts", _input, k=20, _filter=_filter)
         return {"context": search_results}
 
     def chat_message(state: ChatState) -> ChatState:

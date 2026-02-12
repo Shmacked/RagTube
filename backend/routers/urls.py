@@ -27,7 +27,21 @@ async def get_progress(task_id: str, request: Request):
             if await request.is_disconnected():
                 break
 
-            task = tasks_progress.get(task_id, 0)
+            task = tasks_progress.get(task_id, None)
+            if not task:
+                yield {
+                    "event": "result",
+                    "data": json.dumps(
+                        {
+                            "progress": 0,
+                            "status": "failed",
+                            "message": "Task not found",
+                            "url": "",
+                            "object": None
+                        }
+                    )
+                }
+                break
             
             # Check if there is a result yet
             result = tasks_results.get(task_id)

@@ -29,7 +29,7 @@ async def search_vector_db_endpoint(input: VectorDBSearchInput, user_session: Us
     if input._filter is None:
         input._filter = {}
     input._filter["user_id"] = {"$eq": user.id}
-    return search_vector_db(input.collection_name, input.input, _filter=input._filter)
+    return search_vector_db(input.collection_name, input.input, k=input.k, _filter=input._filter)
 
 @router.delete("/")
 async def delete_vector_db_endpoint(collection_name: str, user_session: UserSession = Depends(is_authenticated)):
