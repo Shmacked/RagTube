@@ -1,10 +1,10 @@
 import React from 'react'
-
+import logo from '../assets/rag_tube.png'
 
 const Home = () => {
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-4xl font-bold">RagTube</h1>
+        <div className="flex flex-col items-center justify-center h-full">
+            <img src={logo} alt="RagTube" className="h-1/2" />
         </div>
     );
 };
