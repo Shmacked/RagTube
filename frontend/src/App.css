@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@source "../src/**/*.tsx";
+@source "frontend/src/**/*.tsx";
 
 @layer base {
   html, body, #root {
@@ -34,10 +34,5 @@
 
   tbody tr:nth-child(even) {
     @apply bg-gray-50/50;
-  }
-
-  .lucide:hover {
-    @apply text-blue-500;
-    @apply cursor-pointer;
   }
 }

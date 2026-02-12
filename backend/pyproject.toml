@@ -19,5 +19,6 @@ dependencies = [
     "openai-whisper>=20250625",
     "spacy>=3.8.11",
     "sqlalchemy>=2.0.46",
+    "sse-starlette>=3.2.0",
     "yt-dlp>=2026.2.4",
 ]

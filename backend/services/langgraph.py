@@ -39,8 +39,8 @@ def basic_reducer(left: list | tuple | None, right: list | dict) -> list:
 
     new_state = list(left)
 
-    print(f"Left: {left}")
-    print(f"Right: {right}")
+    # print(f"Left: {left}")
+    # print(f"Right: {right}")
 
     for message in updates:
         if isinstance(message, RemoveMessage):

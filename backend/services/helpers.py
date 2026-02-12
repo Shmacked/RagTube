@@ -5,7 +5,7 @@ from io import BytesIO
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from fastapi import Depends
+from fastapi import Depends, HTTPException
 
 from backend.services.vector_db import add_text_to_vector_db, delete_vector_db_data
 from backend.services.audio_helpers import transcribe
@@ -59,14 +59,30 @@ def delete_urls(user: Users, db: Session = Depends(get_db)) -> bool:
 def get_urls(user: Users, db: Session = Depends(get_db)) -> List[Urls]:
     return db.query(Urls).filter(Urls.user_id == user.id).all()
 
-def create_url(url: str, user: Users, db: Session = Depends(get_db)) -> Urls:
-    transcript = transcribe(url)
-    for segment in transcript:
+def create_url(url: str, user: Users, db: Session = Depends(get_db), task_id: str = None, task_memory: dict = None, tasks_results: dict = None) -> Urls:
+    if task_id and task_memory is None:
+        raise HTTPException(status_code=400, detail="Task memory is required")
+    if task_id and tasks_results is None:
+        raise HTTPException(status_code=400, detail="Tasks results is required")
+    if db.query(Urls).filter(Urls.url == url, Urls.user_id == user.id).first():
+        task_memory[task_id]["status"] = "failed"
+        task_memory[task_id]["message"] = "Link already exists"
+        raise HTTPException(status_code=400, detail="Link already exists")
+
+    transcript = transcribe(url, task_id=task_id, task_memory=task_memory, tasks_results=tasks_results)
+    segment_count = len([e for e in transcript])
+    for i, segment in enumerate(transcript):
+        task_memory[task_id]["progress"] = (int(((i + 1) / segment_count) * 100) / 2) + 50
+        task_memory[task_id]["message"] = f"Adding segment {i + 1} of {segment_count} to vector database"
         add_text_to_vector_db("youtube_transcripts", segment.text, metadata={"user_id": user.id, "url": url, "start_time": segment.start, "end_time": segment.end})
     url_model = Urls(url=url, user_id=user.id)
     db.add(url_model)
     db.commit()
     db.refresh(url_model)
+    task_memory[task_id]["status"] = "completed"
+    task_memory[task_id]["message"] = "Link created successfully"
+    task_memory[task_id]["progress"] = 100
+    tasks_results[task_id] = url_model.to_dict()
     return url_model
 
 def save_langgraph_graph(path: str, graph: CompiledStateGraph) -> None:

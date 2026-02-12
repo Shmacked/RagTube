@@ -10,3 +10,11 @@ class Urls(Base):
     created_at = Column(DateTime, default=datetime.now)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("Users", back_populates="urls")
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "url": self.url,
+            "created_at": str(self.created_at),
+            "user_id": self.user_id,
+        }
