@@ -14,7 +14,8 @@ load_dotenv(dotenv_path="backend/.env")
 
 PERSISTENT_DIRECTORY = "backend/chroma_store"
 COLLECTION_NAME = "youtube_transcripts" # What kind of data we're storing
-EMBEDDING = OpenAIEmbeddings(model="text-embedding-3-small")
+# EMBEDDING = OpenAIEmbeddings(model="text-embedding-3-small")
+EMBEDDING = OpenAIEmbeddings(model="text-embedding-3-large")
 
 vector_dbs = {
     COLLECTION_NAME: Chroma(persist_directory=PERSISTENT_DIRECTORY, embedding_function=EMBEDDING, collection_name=COLLECTION_NAME)

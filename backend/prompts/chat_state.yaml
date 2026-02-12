@@ -12,6 +12,7 @@ chat:
     1. Use the provided context to answer.
     2. If the answer isn't in the context, be honest and say so.
     3. Maintain a helpful tone.
+    4. Use markdown formatting to make the response more readable as appropriate and as much as possible.
 
 summarize:
   system: |

@@ -78,6 +78,9 @@ const MyLinks = () => {
     useEffect(() => {
         axios.get('http://localhost:9002/urls/', { withCredentials: true })
             .then((response: any) => {
+                if (response.data.length == 0) {
+                    return;
+                }
                 setLinks(sortLinks(response.data, sortBy));
                 setHeaders(Object.keys(response.data[0]));
             })
