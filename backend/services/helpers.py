@@ -44,6 +44,18 @@ def delete_url(url: str, user: Users, db: Session = Depends(get_db)) -> bool:
         return False
     return True
 
+def delete_urls(user: Users, db: Session = Depends(get_db)) -> bool:
+    try:
+        delete_vector_db_data("youtube_transcripts", metadata_filter={"user_id": {
+               "$eq": user.id
+            }
+        })
+        db.query(Urls).filter(Urls.user_id == user.id).delete()
+        db.commit()
+    except Exception as e:
+        return False
+    return True
+
 def get_urls(user: Users, db: Session = Depends(get_db)) -> List[Urls]:
     return db.query(Urls).filter(Urls.user_id == user.id).all()
 

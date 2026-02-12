@@ -1,42 +1,43 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
+@import "tailwindcss";
+@source "../src/**/*.tsx";
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+@layer base {
+  html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
   }
-  to {
-    transform: rotate(360deg);
+
+  #root {
+    text-align: center;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Move component-like logic to the components layer or top level */
+@layer components {
+  tbody tr {
+    @apply border-b border-gray-200;
   }
-}
 
-.card {
-  padding: 2em;
-}
+  tbody tr:nth-child(odd):hover {
+    @apply bg-gray-100;
+  }
 
-.read-the-docs {
-  color: #888;
+  tbody tr:nth-child(even):hover {
+    @apply bg-gray-100;
+  }
+
+  tbody tr:nth-child(odd) {
+    @apply bg-white;
+  }
+
+  tbody tr:nth-child(even) {
+    @apply bg-gray-50/50;
+  }
+
+  .lucide:hover {
+    @apply text-blue-500;
+    @apply cursor-pointer;
+  }
 }
