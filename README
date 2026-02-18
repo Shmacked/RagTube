@@ -1,0 +1,9 @@
+In the project root where the folders "frontend" and "backend" are:
+
+```
+uvicorn backend.main:app --reload --port 9002
+```
+
+```
+npm run dev
+```
